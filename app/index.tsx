@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const [selectedTab, setSelectedTab] = useState('All');
+  const navigation = useNavigation();
 
   const giftIdeas = [
     {
@@ -34,9 +35,7 @@ export default function HomeScreen() {
   ];
 
   const handleAddGift = () => {
-    const navigation = useNavigation();
-    navigation.dispatch({ type: 'AddGiftIdea' });
-
+    navigation.navigate('AddGiftIdea');
   };
 
   return (

@@ -52,11 +52,13 @@ export default function AddGiftScreen() {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Choose Recipient</Text>
-          <TouchableOpacity style={styles.select}>
-            <Text style={styles.selectText}>Choose Recipient</Text>
-            <Ionicons name="chevron-down" size={24} color="#666" />
-          </TouchableOpacity>
+          <Text style={styles.label}>Recipient</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter recipient"
+            value={recipient}
+            onChangeText={setRecipient}
+          />
         </View>
 
         <View style={styles.inputGroup}>
