@@ -1,25 +1,35 @@
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import { View } from 'react-native';
 
 import BottomTabBar from '@/components/tabbar/BottomTabBar';
 
 const RootLayout = () => {
 	return (
-		<React.Fragment>
+		<View style={styles.container}>
 			<StatusBar style="auto" />
 			<Tabs
 				tabBar={(props) => <BottomTabBar {...props} />}
 				screenOptions={{
-					// headerShown: false,
-					// tabBarStyle: { display: 'none' },
+					headerShown: false,
 					tabBarActiveTintColor: '#4B6BFB',
 					tabBarInactiveTintColor: '#666666',
 				}}
 			>
 				<Tabs.Screen
-					name="index"
+					name="recipients"
+					options={{
+						title: 'Recipients',
+						tabBarIcon: ({ color, size }) => (
+							<Ionicons name="people-outline" size={size} color={color} />
+						),
+					}}
+				/>
+				<Tabs.Screen
+					name="(gifts)"
 					options={{
 						title: 'Home',
 						tabBarIcon: ({ color, size }) => (
@@ -27,10 +37,25 @@ const RootLayout = () => {
 						),
 					}}
 				/>
-				<Tabs.Screen name="second" options={{ title: 'Settings' }} />
+				<Tabs.Screen
+					name="settings"
+					options={{
+						title: 'Settings',
+						tabBarIcon: ({ color, size }) => (
+							<AntDesign name="setting" size={size} color={color} />
+						),
+					}}
+				/>
 			</Tabs>
-		</React.Fragment>
+		</View>
 	);
+};
+
+const styles = {
+	container: {
+		flex: 1,
+		backgroundColor: '#FFFFFF',
+	},
 };
 
 export default RootLayout;

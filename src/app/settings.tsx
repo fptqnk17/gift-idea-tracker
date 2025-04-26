@@ -1,0 +1,19 @@
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const SettingsScreen = () => {
+	return (
+		<SafeAreaView style={styles.container}>
+			<Text>Settings Screen</Text>
+		</SafeAreaView>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: '#FFFFFF',
+	},
+});
+
+export default SettingsScreen;
