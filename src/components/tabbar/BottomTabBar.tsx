@@ -31,19 +31,11 @@ const BottomTabBar = ({
 					}
 				};
 
-				const onLongPress = () => {
-					navigation.emit({
-						type: 'tabLongPress',
-						target: route.key,
-					});
-				};
-
 				return (
 					<TabBarButton
 						label={label}
 						isFocused={isFocused}
 						onPress={onPress}
-						onLongPress={onLongPress}
 						tabBarIcon={tabBarIcon}
 						tabBarActiveTintColor={options.tabBarActiveTintColor!}
 						tabBarInactiveTintColor={options.tabBarInactiveTintColor!}
@@ -62,6 +54,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 14,
 		borderTopWidth: 2,
 		borderTopColor: '#EEEEEE',
+		gap: 10,
 	},
 });
 

@@ -1,10 +1,16 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { useEffect } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+import Animated, {
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+	withSpring,
+} from 'react-native-reanimated';
 
 export interface TabBarButtonProps {
 	label: string;
 	isFocused: boolean;
 	onPress: () => void;
-	onLongPress: () => void;
 	tabBarIcon?: (props: {
 		focused: boolean;
 		color: string;
@@ -18,36 +24,65 @@ const TabBarButton = ({
 	label,
 	isFocused,
 	onPress,
-	onLongPress,
 	tabBarIcon,
 	tabBarActiveTintColor,
 	tabBarInactiveTintColor,
 }: TabBarButtonProps) => {
+	const scale = useSharedValue(1);
+
+	useEffect(() => {
+		scale.value = withSpring(
+			typeof isFocused === 'boolean' ? (isFocused ? 1 : 0) : isFocused,
+			{ duration: 350 },
+		);
+	}, [scale, isFocused]);
+
+	const animatedTextStyle = useAnimatedStyle(() => {
+		const opacity = interpolate(scale.value, [0, 1], [1, 0]);
+
+		return {
+			opacity,
+		};
+	});
+
+	const animatedIconStyle = useAnimatedStyle(() => {
+		const scaleValue = interpolate(scale.value, [0, 1], [1, 1.2]);
+		const top = interpolate(scale.value, [0, 1], [0, 10]);
+
+		return {
+			transform: [{ scale: scaleValue }],
+			top,
+		};
+	});
+
 	return (
 		<Pressable
 			onPress={onPress}
-			onLongPress={onLongPress}
 			android_ripple={null}
 			style={[styles.tab, isFocused && styles.activeTab]}
 		>
-			{tabBarIcon &&
-				tabBarIcon({
-					color: isFocused ? tabBarActiveTintColor : tabBarInactiveTintColor,
-					size: 24,
-					focused: isFocused,
-				})}
+			{tabBarIcon && (
+				<Animated.View style={[animatedIconStyle]}>
+					{tabBarIcon({
+						color: isFocused ? tabBarActiveTintColor : tabBarInactiveTintColor,
+						size: 24,
+						focused: isFocused,
+					})}
+				</Animated.View>
+			)}
 
-			<Text
+			<Animated.Text
 				style={[
 					{
 						color: isFocused ? tabBarActiveTintColor : tabBarInactiveTintColor,
 					},
 					styles.tabText,
 					isFocused && styles.activeTabText,
+					animatedTextStyle,
 				]}
 			>
 				{label}
-			</Text>
+			</Animated.Text>
 		</Pressable>
 	);
 };
@@ -66,7 +101,7 @@ const styles = StyleSheet.create({
 		marginTop: 4,
 	},
 	activeTab: {
-		backgroundColor: '#e6f0ff',
+		backgroundColor: '#E6F0FF',
 	},
 	activeTabText: {
 		color: '#4B6BFB',
