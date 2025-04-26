@@ -4,6 +4,7 @@ import FilterTabs from '../components/FilterTabs';
 import GiftCard from '../components/GiftCard';
 import BottomTabs from '../components/BottomTabs';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const [selectedTab, setSelectedTab] = useState('All');
@@ -33,8 +34,9 @@ export default function HomeScreen() {
   ];
 
   const handleAddGift = () => {
-    // Logic để thêm gift idea
-    console.log('Add Gift Idea button pressed');
+    const navigation = useNavigation();
+    navigation.dispatch({ type: 'AddGiftIdea' });
+
   };
 
   return (

@@ -5,6 +5,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { Toaster } from 'sonner-native';
 import HomeScreen from "./app/index";
+import AddGiftScreen from './app/add-gift-idea';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,7 @@ function RootStack() {
     headerShown: false
   }}>
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="AddGiftIdea" component={AddGiftScreen} />
     </Stack.Navigator>
   );
 }
