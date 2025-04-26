@@ -1,39 +1,50 @@
-# 🎁 Gift Idea Tracker
+# Welcome to your Expo app 👋
 
-A smart and simple mobile app that helps you quickly capture, organize, and manage gift ideas for your loved ones. Stay on top of every birthday, anniversary, or holiday — without missing a thing.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## ✨ Features
+## Get started
 
-- 📝 Quickly save gift ideas with title, description, image, price, and link
-- 🧑‍🤝‍🧑 Organize ideas by recipient, occasion, or tags
-- 💸 Set and track budgets per recipient or overall
-- 🔔 Smart reminders & calendar sync for upcoming events
-- 📊 Visual budget tracking with charts and progress bars
+1. Install dependencies
 
-## 📱 Screens
+   ```bash
+   npm install
+   ```
 
-- Home (List of Gift Ideas)
-- Add/Edit Gift Idea
-- Recipient List
-- Add/Edit Recipient
-- Recipient Profile
-- Reminders Settings
-- Budget Overview
+2. Start the app
 
-## 🛠️ Tech Stack
+   ```bash
+    npx expo start
+   ```
 
-- React Native (Expo)
-- TypeScript
-- React Navigation
-- Redux / Zustand (state management)
-- Firebase or Supabase (optional)
-- Figma / Uizard (for UI design)
-- Google Calendar API (optional)
+In the output, you'll find options to open the app in a
 
-## 🚀 Getting Started
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-Clone this repository:
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+
+## Get a fresh project
+
+When you're ready, run:
 
 ```bash
-git clone https://github.com/fptqnk17/gift-idea-tracker.git
-cd gift-idea-tracker
+npm run reset-project
+```
+
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
