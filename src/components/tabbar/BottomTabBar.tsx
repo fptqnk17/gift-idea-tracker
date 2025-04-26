@@ -33,6 +33,7 @@ const BottomTabBar = ({
 
 				return (
 					<TabBarButton
+						key={route.name}
 						label={label}
 						isFocused={isFocused}
 						onPress={onPress}
