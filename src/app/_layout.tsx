@@ -14,7 +14,8 @@ const RootLayout = () => {
 				screenOptions={{
 					// headerShown: false,
 					// tabBarStyle: { display: 'none' },
-					tabBarActiveTintColor: '#e91e63',
+					tabBarActiveTintColor: '#4B6BFB',
+					tabBarInactiveTintColor: '#666666',
 				}}
 			>
 				<Tabs.Screen
