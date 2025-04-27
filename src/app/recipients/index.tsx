@@ -8,16 +8,23 @@ import {
 	View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import { Recipient } from '@/models/Recipient';
 
 const AllRecipientsScreen = () => {
+		const router = useRouter();
+	
 	const recipients: Recipient[] = [
 		{ id: '1', name: 'Alex', budget: 2000, spent: 1500 },
 		{ id: '2', name: 'Emily', budget: 2200, spent: 1600 },
 		{ id: '3', name: 'Michael', budget: 3000, spent: 1500 },
 		{ id: '4', name: 'Malow', budget: 1800, spent: 1200 },
 	];
+
+	const handleAddRecipient = () => {
+		router.push('/recipients/add-recipient');
+	}
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -35,7 +42,7 @@ const AllRecipientsScreen = () => {
 						placeholderTextColor="#666"
 					/>
 				</View>
-				<Pressable style={styles.addButton}>
+				<Pressable style={styles.addButton} onPress={handleAddRecipient}>
 					<Text style={styles.addButtonText}>Add</Text>
 				</Pressable>
 			</View>
