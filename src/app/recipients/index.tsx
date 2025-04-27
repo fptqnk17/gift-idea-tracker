@@ -6,6 +6,7 @@ import {
 	Text,
 	TextInput,
 	View,
+	Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -13,18 +14,18 @@ import { useRouter } from 'expo-router';
 import { Recipient } from '@/models/Recipient';
 
 const AllRecipientsScreen = () => {
-		const router = useRouter();
-	
+	const router = useRouter();
+
 	const recipients: Recipient[] = [
-		{ id: '1', name: 'Alex', budget: 2000, spent: 1500 },
-		{ id: '2', name: 'Emily', budget: 2200, spent: 1600 },
-		{ id: '3', name: 'Michael', budget: 3000, spent: 1500 },
-		{ id: '4', name: 'Malow', budget: 1800, spent: 1200 },
+		{ id: '1', image:'https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3445.jpg', name: 'Alex', budget: 2000, spent: 1500 },
+		{ id: '2', image:'https://static.vecteezy.com/system/resources/previews/004/899/833/non_2x/beautiful-girl-with-blue-hair-avatar-of-woman-for-social-network-vector.jpg', name: 'Emily', budget: 2200, spent: 1600 },
+		{ id: '3', image:'https://img.freepik.com/premium-vector/boy-with-blue-hoodie-blue-hoodie-with-hoodie-it_1230457-42660.jpg', name: 'Michael', budget: 3000, spent: 1500 },
+		{ id: '4', image:'https://img.freepik.com/premium-vector/boy-with-hoodie-that-says-hes-boy_1230457-43316.jpg', name: 'Malow', budget: 1800, spent: 1200 },
 	];
 
 	const handleAddRecipient = () => {
 		router.push('/recipients/add-recipient');
-	}
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -52,9 +53,15 @@ const AllRecipientsScreen = () => {
 			<ScrollView style={styles.scrollView}>
 				{recipients.map((recipient) => (
 					<Pressable key={recipient.id} style={styles.recipientCard}>
-						<Text style={styles.recipientName}>{recipient.name}</Text>
-						<Text style={styles.budgetText}>Budget: ${recipient.budget}</Text>
-						<Text style={styles.spentText}>Spent: ${recipient.spent}</Text>
+						<Image
+							source={{ uri: recipient.image }}
+							style={styles.recipientImage}
+						/>
+						<View style={styles.recipientContent}>
+							<Text style={styles.recipientName}>{recipient.name}</Text>
+							<Text style={styles.budgetText}>Budget: ${recipient.budget}</Text>
+							<Text style={styles.spentText}>Spent: ${recipient.spent}</Text>
+						</View>
 					</Pressable>
 				))}
 			</ScrollView>
@@ -121,12 +128,22 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 4,
 		elevation: 2,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	recipientImage: {
+		width: 60,
+		height: 60,
+		borderRadius: 8,
+	},
+	recipientContent: {
+		marginLeft: 12,
+		flex: 1,
 	},
 	recipientName: {
 		fontSize: 18,
 		fontWeight: '600',
 		color: '#333333',
-		marginBottom: 8,
 	},
 	budgetText: {
 		fontSize: 14,
