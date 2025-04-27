@@ -14,30 +14,11 @@ export default function GiftCard({
 	image,
 	title,
 	description,
+	price,
 	recipient,
 	selectedDate,
-	onEdit,
-	onDelete,
 }: GiftCardProps) {
-	const handleDelete = () => {
-		Alert.alert(
-			'Confirm Delete',
-			`Are you sure you want to delete the gift idea "${title}"?`,
-			[
-				{ text: 'Cancel', style: 'cancel' },
-				{ text: 'Delete', style: 'destructive', onPress: onDelete },
-			],
-		);
-	};
-
 	const router = useRouter();
-
-	const handleEdit = () => {
-		router.push({
-			pathname: '/edit-gift',
-			params: { id, image, title, description, recipient, selectedDate },
-		});
-	};
 
 	const handlePress = () => {
 		router.push({
@@ -51,19 +32,10 @@ export default function GiftCard({
 			<Image source={{ uri: image }} style={styles.image} />
 			<View style={styles.content}>
 				<Text style={styles.title}>{title}</Text>
-				<Text style={styles.description}>{description}</Text>
-				<Text style={styles.recipient}>For: {recipient}</Text>
+				<Text style={styles.recipient}>for {recipient}</Text>
 				<Text style={styles.date}>
-					Event Date: {new Date(selectedDate).toLocaleDateString()}
+					Happening on {new Date(selectedDate).toLocaleDateString()}
 				</Text>
-			</View>
-			<View style={styles.actions}>
-				<Pressable onPress={handleEdit} style={styles.actionButton}>
-					<Ionicons name="pencil-outline" size={20} color="#007BFF" />
-				</Pressable>
-				<Pressable onPress={handleDelete} style={styles.actionButton}>
-					<Ionicons name="trash-outline" size={20} color="#FF4D4F" />
-				</Pressable>
 			</View>
 		</Pressable>
 	);

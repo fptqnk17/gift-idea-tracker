@@ -19,6 +19,7 @@ const HomeScreen = () => {
 				'https://api.a0.dev/assets/image?text=gift%20box%20with%20art%20supplies%20and%20golden%20bow',
 			title: 'Creative Art Set',
 			description: 'Perfect for budding artists',
+			price: 29.99,
 			recipient: 'Emily',
 			selectedDate: new Date('2023-12-25').toISOString(),
 		},
@@ -28,6 +29,7 @@ const HomeScreen = () => {
 				'https://api.a0.dev/assets/image?text=luxury%20chocolate%20box%20assortment',
 			title: 'Gourmet Chocolate Basket',
 			description: 'Indulgent treat for any occasion',
+			price: 49.99,
 			recipient: 'Michael',
 			selectedDate: new Date('2023-11-15').toISOString(),
 		},
@@ -37,8 +39,29 @@ const HomeScreen = () => {
 				'https://api.a0.dev/assets/image?text=elegant%20stainless%20steel%20watch',
 			title: 'Stainless Steel Watch',
 			description: 'Timeless elegance for him',
+			price: 199.99,
 			recipient: 'Alex',
 			selectedDate: new Date('2024-01-01').toISOString(),
+		},
+		{
+			id: '4',
+			image:
+				'https://api.a0.dev/assets/image?text=stylish%20handbag%20for%20women',
+			title: 'Stylish Handbag',
+			description: 'Fashionable accessory for her',
+			price: 89.99,
+			recipient: 'Sophia',
+			selectedDate: new Date('2023-10-31').toISOString(),
+		},
+		{
+			id: '5',
+			image:
+				'https://api.a0.dev/assets/image?text=high-tech%20wireless%20earbuds',
+			title: 'Wireless Earbuds',
+			description: 'High-quality sound on the go',
+			price: 79.99,
+			recipient: 'John',
+			selectedDate: new Date('2023-11-20').toISOString(),
 		},
 	];
 
@@ -58,6 +81,7 @@ const HomeScreen = () => {
 						image={gift.image}
 						title={gift.title}
 						description={gift.description}
+						price={gift.price}
 						recipient={gift.recipient}
 						selectedDate={gift.selectedDate}
 					/>

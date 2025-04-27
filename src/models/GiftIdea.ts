@@ -3,6 +3,7 @@ export interface GiftIdea {
 	image: string;
 	title: string;
 	description: string;
+	price: number;
 	recipient: string;
 	selectedDate: string;
 }
