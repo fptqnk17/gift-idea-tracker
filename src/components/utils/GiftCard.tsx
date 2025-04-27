@@ -23,7 +23,7 @@ export default function GiftCard({
 	const handlePress = () => {
 		router.push({
 			pathname: '/detail-gift',
-			params: { id, image, title, description, recipient, selectedDate },
+			params: { id, image, title, description, price, recipient, selectedDate },
 		});
 	};
 

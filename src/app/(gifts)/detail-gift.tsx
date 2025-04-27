@@ -1,11 +1,11 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
-
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import FastImage from 'expo-fast-image';
 import { GiftIdea } from '@/models/GiftIdea';
 
 const DetailGiftScreen = () => {
 	const router = useRouter();
-	const { id, image, title, description, recipient, selectedDate } =
+	const { id, image, title, description, price, recipient, selectedDate } =
 		useLocalSearchParams() as unknown as GiftIdea;
 
 	const handleEdit = () => {
@@ -16,6 +16,7 @@ const DetailGiftScreen = () => {
 				image,
 				title,
 				description,
+				price,
 				recipient,
 				selectedDate,
 			},
@@ -39,19 +40,26 @@ const DetailGiftScreen = () => {
 
 	return (
 		<View style={styles.container}>
-			<Image source={{ uri: image }} style={styles.image} />
+			<FastImage
+				source={{ uri: image }}
+				style={styles.image}
+				cacheKey={id}
+				contentFit="cover"
+			/>
 			<Text style={styles.title}>{title}</Text>
 			<Text style={styles.description}>{description}</Text>
-			<Text style={styles.recipient}>For: {recipient}</Text>
+			<Text style={styles.price}>${price}</Text>
 			<Text style={styles.date}>
-				Event Date: {new Date(selectedDate).toLocaleDateString()}
+				Happening on {new Date(selectedDate).toLocaleDateString()}
 			</Text>
+			<Text style={styles.recipient}>for {recipient}</Text>
+
 			<View style={styles.actions}>
-				<Pressable style={styles.editButton} onPress={handleEdit}>
-					<Text style={styles.buttonText}>Edit</Text>
-				</Pressable>
 				<Pressable style={styles.deleteButton} onPress={handleDelete}>
 					<Text style={styles.buttonText}>Delete</Text>
+				</Pressable>
+				<Pressable style={styles.editButton} onPress={handleEdit}>
+					<Text style={styles.buttonText}>Edit</Text>
 				</Pressable>
 			</View>
 		</View>
@@ -64,21 +72,16 @@ const styles = StyleSheet.create({
 		backgroundColor: '#FFFFFF',
 		padding: 16,
 	},
-	header: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		color: '#333333',
-		marginBottom: 16,
-		textAlign: 'center',
-	},
 	image: {
 		width: '100%',
-		height: 200,
-		borderRadius: 12,
+		height: 250,
+		borderRadius: 16,
 		marginBottom: 16,
+		borderWidth: 1,
+		borderColor: '#f0f0f0',
 	},
 	title: {
-		fontSize: 24,
+		fontSize: 25,
 		fontWeight: 'bold',
 		color: '#333333',
 		marginBottom: 8,
@@ -86,6 +89,13 @@ const styles = StyleSheet.create({
 	description: {
 		fontSize: 16,
 		color: '#666666',
+		lineHeight: 24,
+		marginBottom: 8,
+	},
+	price: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		color: '#28a745',
 		marginBottom: 8,
 	},
 	recipient: {
@@ -95,7 +105,7 @@ const styles = StyleSheet.create({
 	},
 	date: {
 		fontSize: 16,
-		color: '#666666',
+		color: '#888888',
 		marginBottom: 16,
 	},
 	actions: {
@@ -105,19 +115,29 @@ const styles = StyleSheet.create({
 	},
 	editButton: {
 		flex: 1,
-		backgroundColor: '#007BFF',
-		padding: 12,
+		backgroundColor: '#ffa200',
+		paddingVertical: 14,
 		borderRadius: 8,
 		alignItems: 'center',
-		marginRight: 8,
+		marginLeft: 8,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.2,
+		shadowRadius: 6,
+		elevation: 5,
 	},
 	deleteButton: {
 		flex: 1,
 		backgroundColor: '#FF4D4F',
-		padding: 12,
+		paddingVertical: 14,
 		borderRadius: 8,
 		alignItems: 'center',
-		marginLeft: 8,
+		marginRight: 8,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 4 },
+		shadowOpacity: 0.2,
+		shadowRadius: 6,
+		elevation: 5,
 	},
 	buttonText: {
 		color: '#FFFFFF',
