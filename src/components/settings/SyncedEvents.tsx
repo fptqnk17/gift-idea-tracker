@@ -4,11 +4,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const SyncedEvents = () => {
   const events = [
-    { id: 1, name: 'Event name', date: '12 Dec 2025', synced: true },
-    { id: 2, name: 'Event name', date: '12 Dec 2025', synced: false },
-		{ id: 3, name: 'Event name', date: '12 Dec 2025', synced: true },
-		{ id: 4, name: 'Event name', date: '12 Dec 2025', synced: true },
-		{ id: 5, name: 'Event name', date: '12 Dec 2025',		synced: true },
+    { id: 1, name: 'Event name 1', date: '1 May 2025', synced: true },
+    { id: 2, name: 'Event name 2', date: '12 Jan 2025', synced: false },
+		{ id: 3, name: 'Event name 3', date: '12 Dec 2024', synced: true },
   ];
 
   return (
@@ -26,7 +24,7 @@ const SyncedEvents = () => {
             ) : (
               <MaterialIcons name="close" size={20} color="#F44336" />
             )}
-            <MaterialIcons name="content-copy" size={20} color="#666" style={styles.actionIcon} />
+            <MaterialIcons name="edit" size={20} color="#ffaa00" style={styles.actionIcon} />
             <MaterialIcons name="delete" size={20} color="#666" />
           </View>
         </View>
