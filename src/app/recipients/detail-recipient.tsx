@@ -9,7 +9,7 @@ const DetailRecipientScreen = () => {
   // Handle edit action
   const handleEdit = () => {
     router.push({
-      pathname: './recipients/edit-recipient',
+      pathname: '/recipients/edit-recipient',
       params: {
         id,
         image,

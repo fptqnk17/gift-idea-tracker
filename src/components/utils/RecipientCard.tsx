@@ -14,7 +14,7 @@ export default function RecipientCard({
 
   const handlePress = () => {
     router.push({
-      pathname: './recipients/detail-recipient',
+      pathname: '/recipients/detail-recipient',
       params: { id, image, name, description, budget, spent },
     });
   };
