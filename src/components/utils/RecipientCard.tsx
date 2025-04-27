@@ -24,7 +24,6 @@ export default function RecipientCard({
       <Image source={{ uri: image }} style={styles.image} />
       <View style={styles.content}>
         <Text style={styles.name}>{name}</Text>
-				{description && <Text style={styles.description}>{description}</Text>}
         <Text style={styles.budget}>Budget: ${budget}</Text>
         <Text style={styles.spent}>Spent: ${spent}</Text>
       </View>
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
   image: {
     width: 60,
     height: 60,
-    borderRadius: 8,
+    borderRadius: 30,
   },
   content: {
     marginLeft: 12,

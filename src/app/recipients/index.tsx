@@ -8,12 +8,12 @@ import RecipientCard from '@/components/utils/RecipientCard';
 const AllRecipientsScreen = () => {
   const router = useRouter();
 
-  const recipients: Recipient[] = [
-    { id: '1', image: 'https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3445.jpg', name: 'Alex', budget: 2000, spent: 1500 },
-    { id: '2', image: 'https://static.vecteezy.com/system/resources/previews/004/899/833/non_2x/beautiful-girl-with-blue-hair-avatar-of-woman-for-social-network-vector.jpg', name: 'Emily', budget: 2200, spent: 1600 },
-    { id: '3', image: 'https://img.freepik.com/premium-vector/boy-with-blue-hoodie-blue-hoodie-with-hoodie-it_1230457-42660.jpg', name: 'Michael', budget: 3000, spent: 1500 },
-    { id: '4', image: 'https://img.freepik.com/premium-vector/boy-with-hoodie-that-says-hes-boy_1230457-43316.jpg', name: 'Malow', budget: 1800, spent: 1200 },
-  ];
+	const recipients: Recipient[] = [
+		{ id: '1', image: 'https://img.freepik.com/premium-vector/cute-boy-smiling-cartoon-kawaii-boy-illustration-boy-avatar-happy-kid_1001605-3445.jpg', name: 'Alex', description: 'Loves outdoor activities and sports.', budget: 2000, spent: 1500 },
+		{ id: '2', image: 'https://static.vecteezy.com/system/resources/previews/004/899/833/non_2x/beautiful-girl-with-blue-hair-avatar-of-woman-for-social-network-vector.jpg', name: 'Emily', description: 'Enjoys painting and creative arts.', budget: 2200, spent: 1600 },
+		{ id: '3', image: 'https://img.freepik.com/premium-vector/boy-with-blue-hoodie-blue-hoodie-with-hoodie-it_1230457-42660.jpg', name: 'Michael', description: 'A tech enthusiast and gamer.', budget: 3000, spent: 1500 },
+		{ id: '4', image: 'https://img.freepik.com/premium-vector/boy-with-hoodie-that-says-hes-boy_1230457-43316.jpg', name: 'Malow', description: 'Passionate about music and instruments.', budget: 1800, spent: 1200 },
+	];
 
   const handleAddRecipient = () => {
     router.push('/recipients/add-recipient');
