@@ -24,6 +24,7 @@ const EditGiftScreen = () => {
 
 	const [title, setTitle] = useState(params?.title || '');
 	const [description, setDescription] = useState(params?.description || '');
+	const [price, setPrice] = useState(params?.price || 0);
 	const [recipient, setRecipient] = useState(params?.recipient || '');
 	const [selectedDate, setSelectedDate] = useState(
 		params?.selectedDate ? new Date(params.selectedDate) : new Date(),
@@ -40,6 +41,7 @@ const EditGiftScreen = () => {
 			id: params.id,
 			title,
 			description,
+			price,
 			recipient,
 			selectedDate: selectedDate.toISOString(),
 			image,
