@@ -1,207 +1,263 @@
 import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import Modal from 'react-native-modal';
+import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const AddGiftScreen = () => {
-  const navigation = useNavigation();
+  const [image, setImage] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState('');
   const [recipient, setRecipient] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const handleAddGift = () => {
-    console.log({ title, description, recipient, selectedDate });
-    navigation.goBack();
-  };
+  const [showRecipientModal, setShowRecipientModal] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const onChangeDate = (event: any, selectedDate: any) => {
-    setShowPicker(false);
-    if (selectedDate) {
-      setSelectedDate(selectedDate);
+  const recipients = ['Alex', 'Emily', 'Michael', 'Malow'];
+
+  const pickImage = async () => {
+    // Request permission
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions!');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
     }
   };
 
+  const handleSave = () => {
+    const giftData = {
+      image: image || '',
+      title,
+      description,
+      price: parseFloat(price),
+      recipient,
+      selectedDate: selectedDate ? selectedDate.toISOString().split('T')[0] : '',
+    };
+    console.log(giftData);
+    // TODO: gửi giftData lên server hoặc lưu local
+  };
+
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Title</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter title"
-            value={title}
-            onChangeText={setTitle}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Enter description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Price</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter price"
-            value={String(price)}
-            onChangeText={(text) => setPrice(Number(text))}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Image</Text>
-          <Pressable style={styles.uploadButton}>
-            <Ionicons name="cloud-upload-outline" size={24} color="#666" />
-            <Text style={styles.uploadText}>Choose Image</Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Choose Recipient</Text>
-          <Pressable style={styles.select}>
-            <Text style={styles.selectText}>Choose Recipient</Text>
-            <Ionicons name="chevron-down" size={24} color="#666" />
-          </Pressable>
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Choose Time Event</Text>
-          <Pressable
-            style={styles.select}
-            onPress={() => setShowPicker(true)}
-          >
-            <Text style={styles.selectText}>
-              {selectedDate.toLocaleString()}
-            </Text>
-            <Ionicons name="chevron-down" size={24} color="#666" />
-          </Pressable>
-
-          {showPicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="datetime"
-              display="default"
-              onChange={onChangeDate}
-            />
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Upload Image */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Image</Text>
+        <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.previewImage} />
+          ) : (
+            <Text style={styles.pickImageText}>Pick an Image</Text>
           )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Title */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Title</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter title"
+          value={title}
+          onChangeText={setTitle}
+        />
+      </View>
+
+      {/* Description */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={[styles.input, { height: 100 }]}
+          placeholder="Enter description"
+          value={description}
+          onChangeText={setDescription}
+          multiline
+        />
+      </View>
+
+      {/* Price */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Price</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter price"
+          value={price}
+          onChangeText={setPrice}
+          keyboardType="numeric"
+        />
+      </View>
+
+      {/* Recipient */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Recipient</Text>
+        <TouchableOpacity style={styles.dropdown} onPress={() => setShowRecipientModal(true)}>
+          <Text style={styles.dropdownText}>
+            {recipient ? recipient : 'Choose Recipient'}
+          </Text>
+          <MaterialIcons name="arrow-drop-down" size={24} color="#666" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Selected Date */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Selected Date</Text>
+        <TouchableOpacity style={styles.dropdown} onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.dropdownText}>
+            {selectedDate ? selectedDate.toDateString() : 'Pick a date'}
+          </Text>
+          <MaterialIcons name="calendar-today" size={20} color="#666" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Save Button */}
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Save Gift</Text>
+      </TouchableOpacity>
+
+      {/* Recipient Modal */}
+      <Modal
+        isVisible={showRecipientModal}
+        onBackdropPress={() => setShowRecipientModal(false)}
+        onBackButtonPress={() => setShowRecipientModal(false)}
+      >
+        <View style={styles.modalContent}>
+          {recipients.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.option}
+              onPress={() => {
+                setRecipient(item);
+                setShowRecipientModal(false);
+              }}
+            >
+              <View style={styles.radioButtonContainer}>
+                <MaterialIcons
+                  name={recipient === item ? 'radio-button-checked' : 'radio-button-unchecked'}
+                  size={24}
+                  color={recipient === item ? '#007AFF' : '#666'}
+                />
+                <Text style={styles.optionText}>{item}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
+      </Modal>
 
-        <Pressable style={styles.addButton} onPress={handleAddGift}>
-          <Text style={styles.addButtonText}>Add Gift Idea</Text>
-        </Pressable>
-
-        <Pressable
-          style={styles.cancelButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.cancelButtonText}>Cancel</Text>
-        </Pressable>
-      </ScrollView>
-    </View>
+      {/* Date Picker */}
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate || new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, date) => {
+            setShowDatePicker(false);
+            if (date) setSelectedDate(date);
+          }}
+        />
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-    paddingVertical: 16,
-  },
-  scrollView: {
-    flex: 1,
     padding: 16,
+    backgroundColor: '#F5F5F5',
+    flexGrow: 1,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
-    color: '#666666',
+    fontSize: 14,
+    color: '#666',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
     borderWidth: 1,
-    borderColor: '#DDDDDD',
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  uploadButton: {
-    backgroundColor: 'white',
+    borderColor: '#E0E0E0',
     borderRadius: 8,
-    padding: 12,
-    flexDirection: 'row',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    backgroundColor: 'white',
+    color: '#333',
+  },
+  imagePicker: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    height: 180,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
-  },
-  uploadText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#666666',
-  },
-  select: {
     backgroundColor: 'white',
+  },
+  pickImageText: {
+    color: '#666',
+    fontSize: 16,
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
     borderRadius: 8,
-    padding: 12,
+  },
+  dropdown: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: '#DDDDDD',
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: 'white',
   },
-  selectText: {
-    fontSize: 16,
-    color: '#666666',
+  dropdownText: {
+    fontSize: 15,
+    color: '#333',
   },
-  addButton: {
-    backgroundColor: '#4B6BFB',
+  modalContent: {
+    backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
+  },
+  option: {
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#333',
+    marginLeft: 8,
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
     alignItems: 'center',
     marginTop: 24,
   },
-  addButtonText: {
+  saveButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
-  },
-  cancelButton: {
-    backgroundColor: '#F8F9FA',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  cancelButtonText: {
-    color: '#666666',
-    fontSize: 16,
   },
 });
 
