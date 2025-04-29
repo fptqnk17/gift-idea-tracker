@@ -1,12 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { GiftIdea } from '@/models/GiftIdea';
+import { GiftIdea } from '@/features/gifts/types';
+import { findRecipientById } from '@/features/recipients/recipientService';
+import { formatDate } from '@/utils/dateUtils';
 
 interface GiftCardProps extends GiftIdea {
 	onEdit?: () => void;
-	onDelete?: () => void;
 }
 
 export default function GiftCard({
@@ -19,6 +20,18 @@ export default function GiftCard({
 	selectedDate,
 }: GiftCardProps) {
 	const router = useRouter();
+	const [recipientName, setRecipientName] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchRecipientName = async () => {
+			const name = await findRecipientById(Number(recipient));
+			setRecipientName(name);
+		};
+
+		fetchRecipientName();
+	}, [recipient]);
+
+	const formattedDate = formatDate(selectedDate);
 
 	const handlePress = () => {
 		router.push({
@@ -32,10 +45,10 @@ export default function GiftCard({
 			<Image source={{ uri: image }} style={styles.image} />
 			<View style={styles.content}>
 				<Text style={styles.title}>{title}</Text>
-				<Text style={styles.recipient}>for {recipient}</Text>
-				<Text style={styles.date}>
-					Happening on {new Date(selectedDate).toLocaleDateString()}
+				<Text style={styles.recipient}>
+					for {recipientName || 'Loading...'}
 				</Text>
+				<Text style={styles.date}>Happening on {formattedDate}</Text>
 			</View>
 		</Pressable>
 	);
@@ -70,11 +83,6 @@ const styles = StyleSheet.create({
 		fontWeight: '600',
 		color: '#333333',
 	},
-	description: {
-		fontSize: 14,
-		color: '#666666',
-		marginTop: 4,
-	},
 	recipient: {
 		fontSize: 14,
 		color: '#666666',
@@ -84,13 +92,5 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: '#666666',
 		marginTop: 4,
-	},
-	actions: {
-		flexDirection: 'column',
-		alignItems: 'center',
-		justifyContent: 'space-evenly',
-	},
-	actionButton: {
-		marginVertical: 8,
 	},
 });
