@@ -46,7 +46,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Build app
-        run: eas build --platform android --profile production --local --output ${{ github.workspace }}/app-release.apk
+        # run: eas build --platform android --profile production --local --output ${{ github.workspace }}/app-release.apk
+        run: eas build --platform android --profile production --output ${{ github.workspace }}/app-release.apk
 
       - name: GH Release
         uses: softprops/action-gh-release@v2
