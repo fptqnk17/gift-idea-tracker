@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Modal from 'react-native-modal';
 
-const ReminderSettings = () => {
+interface ReminderSettingsProps {
+  onToggle?: () => void;
+}
+
+const ReminderSettings: React.FC<ReminderSettingsProps> = ({ onToggle }) => {
   const [leadTime, setLeadTime] = useState('1 day before');
   const [occasions, setOccasions] = useState('All occasions');
   const [isLeadTimeModalVisible, setIsLeadTimeModalVisible] = useState(false);
@@ -14,10 +18,12 @@ const ReminderSettings = () => {
 
   const toggleLeadTimeModal = () => {
     setIsLeadTimeModalVisible(!isLeadTimeModalVisible);
+    if (onToggle) onToggle();
   };
 
   const toggleOccasionsModal = () => {
     setIsOccasionsModalVisible(!isOccasionsModalVisible);
+    if (onToggle) onToggle();
   };
 
   return (

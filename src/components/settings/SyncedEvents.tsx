@@ -2,13 +2,18 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const SyncedEvents = () => {
-  const events = [
-    { id: 1, name: 'Event name 1', date: '1 May 2025', synced: true },
-    { id: 2, name: 'Event name 2', date: '12 Jan 2025', synced: false },
-		{ id: 3, name: 'Event name 3', date: '12 Dec 2024', synced: true },
-  ];
+interface Event {
+  id: number;
+  name: string;
+  date: string;
+  synced: boolean;
+}
 
+interface SyncedEventsProps {
+  events: Event[];
+}
+
+const SyncedEvents: React.FC<SyncedEventsProps> = ({ events }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Synced Events</Text>
