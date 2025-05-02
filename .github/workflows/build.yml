@@ -20,14 +20,19 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Set up JDK 17
-      #   uses: actions/setup-java@v4
-      #   with:
-      #     java-version: 17
-      #     distribution: temurin
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
 
       - name: 🏗 Setup Bun
         uses: oven-sh/setup-bun@v2
+
+      - name: 📝 Create .env file
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
 
       - name: 📦 Install dependencies
         run: bun install
