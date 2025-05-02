@@ -49,12 +49,11 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Build app
-        # run: eas build --platform android --profile production --local --output ${{ github.workspace }}/app-release.apk
         run: eas build --platform android --profile production --non-interactive --wait
 
       - name: 🔽 Download APK
         run: |
-          BUILD_URL=$(eas build:list --status=finished --limit=1 --json | jq -r '.[0].artifacts.buildUrl')
+          BUILD_URL=$(eas build:list --status=finished --limit=1 --json --non-interactive | jq -r '.[0].artifacts.buildUrl')
           echo "Downloading from $BUILD_URL"
           curl -o ${{ github.workspace }}/app-release.apk "$BUILD_URL"
 
