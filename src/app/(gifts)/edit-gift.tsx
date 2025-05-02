@@ -1,44 +1,97 @@
-import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {
-	useNavigation,
-	useRoute as useRouteAlias,
-} from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
-	Alert,
 	Image,
-	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TextInput,
+	TouchableOpacity,
 	View,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
-import { GiftIdea } from '@/models/GiftIdea';
+import { updateGift } from '@/features/gifts/giftSlice';
+import {
+	fetchRecipients,
+	findRecipientById,
+} from '@/features/recipients/recipientService';
+import { useAppDispatch } from '@/redux/hooks';
+import { updateGiftThumbnail } from '@/services/updateImage';
+import { formatPrice } from '@/utils/priceUtils';
 
 const EditGiftScreen = () => {
-	const navigation = useNavigation();
-	const route = useRouteAlias();
-	const params = route.params as GiftIdea;
+	const dispatch = useAppDispatch();
+	const router = useRouter();
+	const params = useLocalSearchParams() as unknown as {
+		id: string;
+		image: string;
+		title: string;
+		description?: string;
+		price: number;
+		recipient: string;
+		selectedDate: string;
+	};
 
 	const [title, setTitle] = useState(params?.title || '');
 	const [description, setDescription] = useState(params?.description || '');
-	const [price, setPrice] = useState(params?.price || 0);
-	const [recipient, setRecipient] = useState(params?.recipient || '');
-	const [selectedDate, setSelectedDate] = useState(
-		params?.selectedDate ? new Date(params.selectedDate) : new Date(),
+	const [recipient, setRecipient] = useState<string | null>(
+		params?.recipient || null,
 	);
-	const [image, setImage] = useState(params?.image || '');
+	const [recipientName, setRecipientName] = useState<string | null>(null);
+	const [selectedDate, setSelectedDate] = useState<Date | null>(
+		params?.selectedDate ? new Date(params.selectedDate) : null,
+	);
+	const [image, setImage] = useState<string | null>(params?.image || null);
 
+	const [recipients, setRecipients] = useState<
+		{ id: string; name: string; budget: number; spent: number }[]
+	>([]);
 	const [showRecipientModal, setShowRecipientModal] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
 
-	const recipients = ['Alex', 'Emily', 'Michael', 'Malow'];
+	const [errors, setErrors] = useState({
+		title: '',
+		recipient: '',
+		selectedDate: '',
+	});
+
+	const [isSaving, setIsSaving] = useState(false);
+
+	useEffect(() => {
+		const loadRecipients = async () => {
+			try {
+				const data = await fetchRecipients();
+				setRecipients(data);
+			} catch (error) {
+				alert('Failed to load recipients');
+			}
+		};
+
+		const loadRecipientName = async () => {
+			if (recipient) {
+				try {
+					const recipientData = recipients.find((r) => r.id === recipient);
+					if (recipientData) {
+						setRecipientName(recipientData.name);
+					} else {
+						const fetchedRecipientName = await findRecipientById(
+							Number(recipient),
+						);
+						setRecipientName(fetchedRecipientName);
+					}
+				} catch (error) {
+					console.error('Failed to fetch recipient name:', error);
+				}
+			}
+		};
+
+		loadRecipients();
+		loadRecipientName();
+	}, [recipient, recipients]);
 
 	const pickImage = async () => {
 		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -59,105 +112,159 @@ const EditGiftScreen = () => {
 		}
 	};
 
-	const handleEditGift = () => {
-		if (!title || !description || !recipient || !image) {
-			Alert.alert('Error', 'Please fill in all fields.');
+	const validateFields = () => {
+		const newErrors = {
+			title: title ? '' : 'Title is required',
+			recipient: recipient ? '' : 'Recipient is required',
+			selectedDate: selectedDate ? '' : 'Date is required',
+		};
+
+		setErrors(newErrors);
+
+		return !Object.values(newErrors).some((error) => error !== '');
+	};
+
+	const handleSave = async () => {
+		if (!validateFields()) {
 			return;
 		}
 
-		const updatedGift: GiftIdea = {
-			id: params.id,
-			title,
-			description,
-			price,
-			recipient,
-			selectedDate: selectedDate.toISOString(),
-			image,
-		};
+		if (!recipient) {
+			alert('Please select a recipient.');
+			return;
+		}
 
-		console.log('Updated Gift Idea:', updatedGift);
-		Alert.alert('Success', 'Gift idea updated successfully!');
-		navigation.goBack();
+		setIsSaving(true);
+
+		try {
+			let updatedImageUrl = params.image;
+
+			if (image && image !== params.image) {
+				updatedImageUrl = await updateGiftThumbnail(params.image, image);
+			}
+
+			const giftData = {
+				id: params.id,
+				image: updatedImageUrl || 'https://placeholder.com/default-image.png',
+				title,
+				description,
+				recipient: recipient,
+				selectedDate: selectedDate ? selectedDate.toISOString() : '',
+			};
+
+			await dispatch(updateGift(giftData)).unwrap();
+
+			alert('Gift updated successfully!');
+			router.push('/(gifts)');
+		} catch (error) {
+			console.error('Error updating gift:', error);
+			const errorMessage =
+				error instanceof Error ? error.message : 'An unknown error occurred';
+			alert(`Failed to update gift: ${errorMessage}`);
+		} finally {
+			setIsSaving(false);
+		}
 	};
 
 	return (
-		<View style={styles.container}>
-			<ScrollView style={styles.scrollView}>
-				<View style={styles.inputGroup}>
-					<Text style={styles.label}>Title</Text>
-					<TextInput
-						style={styles.input}
-						placeholder="Enter title"
-						value={title}
-						onChangeText={setTitle}
-					/>
-				</View>
-
-				<View style={styles.inputGroup}>
-					<Text style={styles.label}>Description</Text>
-					<TextInput
-						style={[styles.input, styles.textArea]}
-						placeholder="Enter description"
-						value={description}
-						onChangeText={setDescription}
-						multiline
-						numberOfLines={4}
-					/>
-				</View>
-
-				<View style={styles.inputGroup}>
-					<Text style={styles.label}>Image</Text>
+		<ScrollView contentContainerStyle={styles.container}>
+			{/* Upload Image */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>Image</Text>
+				<TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
 					{image ? (
-						<>
-							<Image source={{ uri: image }} style={styles.imagePreview} />
-							<Pressable style={styles.changeImageButton} onPress={pickImage}>
-								<Text style={styles.changeImageText}>Change Image</Text>
-							</Pressable>
-						</>
+						<Image source={{ uri: image }} style={styles.previewImage} />
 					) : (
-						<Pressable style={styles.changeImageButton} onPress={pickImage}>
-							<Text style={styles.changeImageText}>Pick an Image</Text>
-						</Pressable>
+						<Text style={styles.pickImageText}>Pick an Image</Text>
 					)}
-				</View>
+				</TouchableOpacity>
+			</View>
 
-				<View style={styles.inputGroup}>
-					<Text style={styles.label}>Choose Recipient</Text>
-					<Pressable
-						style={styles.select}
-						onPress={() => setShowRecipientModal(true)}
-					>
-						<Text style={styles.selectText}>
-							{recipient || 'Choose Recipient'}
-						</Text>
-						<Ionicons name="chevron-down" size={24} color="#666666" />
-					</Pressable>
-				</View>
+			{/* Title */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>
+					Title <Text style={styles.required}>*</Text>
+				</Text>
+				<TextInput
+					style={[styles.input, errors.title && styles.inputError]}
+					placeholder="Enter title"
+					value={title}
+					onChangeText={(text) => {
+						setTitle(text);
+						if (errors.title) setErrors({ ...errors, title: '' });
+					}}
+				/>
+				{errors.title ? (
+					<Text style={styles.errorText}>{errors.title}</Text>
+				) : null}
+			</View>
 
-				<View style={styles.inputGroup}>
-					<Text style={styles.label}>Choose Time Event</Text>
-					<Pressable
-						style={styles.select}
-						onPress={() => setShowDatePicker(true)}
-					>
-						<Text style={styles.selectText}>
-							{selectedDate.toISOString().split('T')[0]}
-						</Text>
-						<Ionicons name="chevron-down" size={24} color="#666666" />
-					</Pressable>
-				</View>
+			{/* Description */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>Description</Text>
+				<TextInput
+					style={[styles.input, { height: 100 }]}
+					placeholder="Enter description"
+					value={description}
+					onChangeText={setDescription}
+					multiline
+				/>
+			</View>
 
-				<Pressable style={styles.addButton} onPress={handleEditGift}>
-					<Text style={styles.addButtonText}>Save Changes</Text>
-				</Pressable>
+			{/* Price (Read-only) */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>Price</Text>
+				<Text style={styles.infoText}>${formatPrice(params.price)}</Text>
+			</View>
 
-				<Pressable
-					style={styles.cancelButton}
-					onPress={() => navigation.goBack()}
+			{/* Recipient */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>
+					Recipient <Text style={styles.required}>*</Text>
+				</Text>
+				<TouchableOpacity
+					style={[styles.dropdown, errors.recipient && styles.inputError]}
+					onPress={() => setShowRecipientModal(true)}
 				>
-					<Text style={styles.cancelButtonText}>Cancel</Text>
-				</Pressable>
-			</ScrollView>
+					<Text style={styles.dropdownText}>
+						{recipientName || 'Choose Recipient'}
+					</Text>
+					<MaterialIcons name="arrow-drop-down" size={24} color="#666" />
+				</TouchableOpacity>
+				{errors.recipient ? (
+					<Text style={styles.errorText}>{errors.recipient}</Text>
+				) : null}
+			</View>
+
+			{/* Selected Date */}
+			<View style={styles.inputGroup}>
+				<Text style={styles.label}>
+					Selected Date <Text style={styles.required}>*</Text>
+				</Text>
+				<TouchableOpacity
+					style={[styles.dropdown, errors.selectedDate && styles.inputError]}
+					onPress={() => setShowDatePicker(true)}
+				>
+					<Text style={styles.dropdownText}>
+						{selectedDate ? selectedDate.toDateString() : 'Pick a date'}
+					</Text>
+					<MaterialIcons name="calendar-today" size={20} color="#666" />
+				</TouchableOpacity>
+				{errors.selectedDate ? (
+					<Text style={styles.errorText}>{errors.selectedDate}</Text>
+				) : null}
+			</View>
+
+			{/* Save Button */}
+			<TouchableOpacity
+				style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
+				onPress={handleSave}
+				disabled={isSaving}
+			>
+				<Text style={styles.saveButtonText}>
+					{isSaving ? 'Saving...' : 'Save Changes'}
+				</Text>
+			</TouchableOpacity>
 
 			{/* Recipient Modal */}
 			<Modal
@@ -166,130 +273,119 @@ const EditGiftScreen = () => {
 				onBackButtonPress={() => setShowRecipientModal(false)}
 			>
 				<View style={styles.modalContent}>
-					{recipients.map((item, index) => (
-						<Pressable
-							key={index}
+					{recipients.map((item) => (
+						<TouchableOpacity
+							key={item.id}
 							style={styles.option}
 							onPress={() => {
-								setRecipient(item);
+								setRecipient(item.id);
+								setRecipientName(item.name);
+								setErrors({ ...errors, recipient: '' });
 								setShowRecipientModal(false);
 							}}
 						>
 							<View style={styles.radioButtonContainer}>
 								<MaterialIcons
 									name={
-										recipient === item
+										recipient === item.id
 											? 'radio-button-checked'
 											: 'radio-button-unchecked'
 									}
 									size={24}
-									color={recipient === item ? '#007AFF' : '#666'}
+									color={recipient === item.id ? '#007AFF' : '#666'}
 								/>
-								<Text style={styles.optionText}>{item}</Text>
+								<Text style={styles.optionText}>{item.name}</Text>
 							</View>
-						</Pressable>
+						</TouchableOpacity>
 					))}
 				</View>
 			</Modal>
+
+			{/* Date Picker */}
 			{showDatePicker && (
 				<DateTimePicker
-					value={selectedDate}
+					value={selectedDate || new Date()}
 					mode="date"
 					display="default"
 					onChange={(event, date) => {
+						if (event.type === 'set' && date) {
+							setSelectedDate(date);
+							setErrors({ ...errors, selectedDate: '' });
+						}
 						setShowDatePicker(false);
-						if (date) setSelectedDate(date);
 					}}
 				/>
 			)}
-		</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#F8F9FA',
-	},
-	scrollView: {
-		flex: 1,
 		padding: 16,
+		backgroundColor: '#F5F5F5',
+		flexGrow: 1,
 	},
 	inputGroup: {
-		marginBottom: 20,
+		marginBottom: 16,
 	},
 	label: {
-		fontSize: 16,
-		color: '#666666',
+		fontSize: 14,
+		color: '#666',
 		marginBottom: 8,
 	},
+	required: {
+		color: 'red',
+	},
 	input: {
-		backgroundColor: 'white',
-		borderRadius: 8,
-		padding: 12,
-		fontSize: 16,
 		borderWidth: 1,
-		borderColor: '#DDDDDD',
-	},
-	textArea: {
-		height: 100,
-		textAlignVertical: 'top',
-	},
-	imagePreview: {
-		width: '100%',
-		height: 200,
+		borderColor: '#E0E0E0',
 		borderRadius: 8,
-		marginBottom: 12,
-	},
-	changeImageButton: {
-		backgroundColor: '#007BFF',
-		borderRadius: 8,
-		padding: 12,
-		alignItems: 'center',
-		marginTop: 8,
-	},
-	changeImageText: {
-		color: 'white',
-		fontSize: 16,
-		fontWeight: '600',
-	},
-	select: {
+		paddingHorizontal: 12,
+		paddingVertical: 10,
+		fontSize: 15,
 		backgroundColor: 'white',
+		color: '#333',
+	},
+	inputError: {
+		borderColor: 'red',
+	},
+	errorText: {
+		color: 'red',
+		fontSize: 12,
+		marginTop: 4,
+	},
+	imagePicker: {
+		borderWidth: 1,
+		borderColor: '#E0E0E0',
 		borderRadius: 8,
-		padding: 12,
+		height: 180,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'white',
+	},
+	pickImageText: {
+		color: '#666',
+		fontSize: 16,
+	},
+	previewImage: {
+		width: '100%',
+		height: '100%',
+		borderRadius: 8,
+	},
+	dropdown: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		borderWidth: 1,
-		borderColor: '#DDDDDD',
-	},
-	selectText: {
-		fontSize: 16,
-		color: '#666666',
-	},
-	addButton: {
-		backgroundColor: '#4B6BFB',
+		borderColor: '#E0E0E0',
 		borderRadius: 8,
-		padding: 16,
-		alignItems: 'center',
-		marginTop: 24,
+		padding: 12,
+		backgroundColor: 'white',
 	},
-	addButtonText: {
-		color: 'white',
-		fontSize: 16,
-		fontWeight: '600',
-	},
-	cancelButton: {
-		backgroundColor: '#F8F9FA',
-		borderRadius: 8,
-		padding: 16,
-		alignItems: 'center',
-		marginTop: 12,
-	},
-	cancelButtonText: {
-		color: '#666666',
-		fontSize: 16,
-		marginBottom: 20,
+	dropdownText: {
+		fontSize: 15,
+		color: '#333',
 	},
 	modalContent: {
 		backgroundColor: 'white',
@@ -309,6 +405,25 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#333',
 		marginLeft: 8,
+	},
+	saveButton: {
+		backgroundColor: '#007AFF',
+		padding: 16,
+		borderRadius: 8,
+		alignItems: 'center',
+		marginTop: 24,
+	},
+	saveButtonDisabled: {
+		backgroundColor: '#A0A0A0',
+	},
+	saveButtonText: {
+		color: 'white',
+		fontSize: 16,
+		fontWeight: '600',
+	},
+	infoText: {
+		fontSize: 16,
+		color: '#333',
 	},
 });
 
