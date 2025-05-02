@@ -37,7 +37,6 @@ jobs:
         with:
           packager: bun
           eas-version: latest
-          expo-version: 52
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Build app
