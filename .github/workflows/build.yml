@@ -3,7 +3,7 @@ name: Build apk
 on:
   push:
     branches:
-      - feature/deploy
+      - feature/deploys
 
 permissions:
   contents: write
@@ -50,17 +50,3 @@ jobs:
 
       - name: 🚀 Build app
         run: eas build --platform android --profile production --non-interactive --wait
-
-      - name: 🔽 Download APK
-        run: |
-          BUILD_URL=$(eas build:list --status=finished --limit=1 --json --non-interactive | jq -r '.[0].artifacts.buildUrl')
-          echo "Downloading from $BUILD_URL"
-          curl -o ${{ github.workspace }}/app-release.apk "$BUILD_URL"
-
-      - name: GH Release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: gift-idea-tracker
-          tag_name: 1.0.0
-          files: |
-            ${{ github.workspace }}/app-release.apk
