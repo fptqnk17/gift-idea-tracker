@@ -38,10 +38,12 @@ export const updateRecipient = async (
 	return data as Recipient;
 };
 
-export const findRecipientById = async (id: number): Promise<string | null> => {
+export const findRecipientById = async (
+	id: number,
+): Promise<Recipient | null> => {
 	const { data, error } = await supabase
 		.from('recipients')
-		.select('name')
+		.select('*')
 		.eq('id', id)
 		.single();
 
@@ -50,5 +52,5 @@ export const findRecipientById = async (id: number): Promise<string | null> => {
 		return null;
 	}
 
-	return data?.name || null;
+	return data as Recipient;
 };
