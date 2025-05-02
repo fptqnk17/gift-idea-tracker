@@ -187,4 +187,15 @@ const styles = StyleSheet.create({
 	activeOptionText: {
 		color: '#4B6BFB',
 	},
+	searchInput: {
+		height: 50,
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		borderWidth: 1,
+		borderColor: '#E0E0E0',
+		borderRadius: 8,
+		fontSize: 16,
+		color: '#333',
+		backgroundColor: 'white',
+	},
 });
