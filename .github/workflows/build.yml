@@ -33,6 +33,7 @@ jobs:
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+          echo "EXPO_ROUTER_APP_ROOT=${{ secrets.EXPO_ROUTER_APP_ROOT }}" >> .env
 
       - name: 📦 Install dependencies
         run: bun install
