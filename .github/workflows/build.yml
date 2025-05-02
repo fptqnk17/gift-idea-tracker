@@ -35,6 +35,9 @@ jobs:
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
           echo "EXPO_ROUTER_APP_ROOT=${{ secrets.EXPO_ROUTER_APP_ROOT }}" >> .env
 
+      - name: 📦 Install jq
+        run: sudo apt-get install jq
+
       - name: 📦 Install dependencies
         run: bun install
 
@@ -47,7 +50,13 @@ jobs:
 
       - name: 🚀 Build app
         # run: eas build --platform android --profile production --local --output ${{ github.workspace }}/app-release.apk
-        run: eas build --platform android --profile production --output ${{ github.workspace }}/app-release.apk
+        run: eas build --platform android --profile production --non-interactive --wait
+
+      - name: 🔽 Download APK
+        run: |
+          BUILD_URL=$(eas build:list --status=finished --limit=1 --json | jq -r '.[0].artifacts.buildUrl')
+          echo "Downloading from $BUILD_URL"
+          curl -o ${{ github.workspace }}/app-release.apk "$BUILD_URL"
 
       - name: GH Release
         uses: softprops/action-gh-release@v2
