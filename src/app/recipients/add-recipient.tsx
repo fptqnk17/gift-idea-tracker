@@ -20,7 +20,6 @@ const AddRecipientScreen = () => {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [budget, setBudget] = useState('');
-	const [spent, setSpent] = useState('');
 	const [errors, setErrors] = useState<{ name: string; budget: string }>({
 		name: '',
 		budget: '',
@@ -103,9 +102,9 @@ const AddRecipientScreen = () => {
 			{/* Upload Image */}
 			<View style={styles.inputGroup}>
 				<Text style={styles.label}>Profile Image</Text>
-				<TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+				<TouchableOpacity style={styles.imagePickerCircle} onPress={pickImage}>
 					{image ? (
-						<Image source={{ uri: image }} style={styles.previewImage} />
+						<Image source={{ uri: image }} style={styles.previewImageCircle} />
 					) : (
 						<Text style={styles.pickImageText}>Pick an Image</Text>
 					)}
@@ -114,13 +113,17 @@ const AddRecipientScreen = () => {
 
 			{/* Name */}
 			<View style={styles.inputGroup}>
-				<Text style={styles.label}>Name</Text>
+				<Text style={styles.label}>
+					Name <Text style={styles.required}>*</Text>
+				</Text>
 				<TextInput
-					style={styles.input}
+					style={[styles.input, errors.name && styles.inputError]}
 					placeholder="Enter recipient's name"
 					value={name}
-					onChangeText={setName}
-					onBlur={() => validateFields()}
+					onChangeText={(text) => {
+						setName(text);
+						if (errors.name) setErrors({ ...errors, name: '' });
+					}}
 				/>
 				{errors.name ? (
 					<Text style={styles.errorText}>{errors.name}</Text>
@@ -141,30 +144,22 @@ const AddRecipientScreen = () => {
 
 			{/* Budget */}
 			<View style={styles.inputGroup}>
-				<Text style={styles.label}>Budget</Text>
+				<Text style={styles.label}>
+					Budget <Text style={styles.required}>*</Text>
+				</Text>
 				<TextInput
-					style={styles.input}
+					style={[styles.input, errors.budget && styles.inputError]}
 					placeholder="Enter budget"
 					value={budget}
-					onChangeText={setBudget}
+					onChangeText={(text) => {
+						setBudget(text);
+						if (errors.budget) setErrors({ ...errors, budget: '' });
+					}}
 					keyboardType="numeric"
-					onBlur={() => validateFields()}
 				/>
 				{errors.budget ? (
 					<Text style={styles.errorText}>{errors.budget}</Text>
 				) : null}
-			</View>
-
-			{/* Spent */}
-			<View style={styles.inputGroup}>
-				<Text style={styles.label}>Spent</Text>
-				<TextInput
-					style={styles.input}
-					placeholder="Enter spent amount"
-					value={spent}
-					onChangeText={setSpent}
-					keyboardType="numeric"
-				/>
 			</View>
 
 			{/* Save Button */}
@@ -214,6 +209,17 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		backgroundColor: 'white',
 	},
+	imagePickerCircle: {
+		borderWidth: 1,
+		borderColor: '#E0E0E0',
+		borderRadius: 90,
+		height: 180,
+		width: 180,
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: 'white',
+		alignSelf: 'center',
+	},
 	pickImageText: {
 		color: '#666',
 		fontSize: 16,
@@ -222,6 +228,11 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 		borderRadius: 8,
+	},
+	previewImageCircle: {
+		width: '100%',
+		height: '100%',
+		borderRadius: 90,
 	},
 	saveButton: {
 		backgroundColor: '#007AFF',
@@ -242,6 +253,12 @@ const styles = StyleSheet.create({
 		color: 'red',
 		fontSize: 12,
 		marginTop: 4,
+	},
+	required: {
+		color: 'red',
+	},
+	inputError: {
+		borderColor: 'red',
 	},
 });
 

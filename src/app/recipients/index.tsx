@@ -20,6 +20,11 @@ const AllRecipientsScreen = () => {
 	const [recipients, setRecipients] = useState<Recipient[]>([]);
 	const [sortField, setSortField] = useState<string | null>(null);
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [searchQuery, setSearchQuery] = useState('');
+
+	const filteredRecipients = recipients.filter((recipient) =>
+		recipient.name.toLowerCase().includes(searchQuery.toLowerCase()),
+	);
 
 	useEffect(() => {
 		const loadRecipients = async () => {
@@ -55,6 +60,10 @@ const AllRecipientsScreen = () => {
 		setRecipients(sortedRecipients);
 	};
 
+	const handleSearch = (query: string) => {
+		setSearchQuery(query);
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
@@ -69,6 +78,8 @@ const AllRecipientsScreen = () => {
 						style={styles.searchInput}
 						placeholder="Search"
 						placeholderTextColor="#666"
+						value={searchQuery}
+						onChangeText={handleSearch}
 					/>
 				</View>
 				<Pressable style={styles.addButton} onPress={handleAddRecipient}>
@@ -105,7 +116,7 @@ const AllRecipientsScreen = () => {
 			</View>
 
 			<ScrollView style={styles.scrollView}>
-				{recipients.map((recipient) => (
+				{filteredRecipients.map((recipient) => (
 					<RecipientCard
 						key={recipient.id}
 						id={recipient.id}
