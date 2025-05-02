@@ -26,6 +26,15 @@
 		"plugins": ["expo-router"],
 		"experiments": {
 			"typedRoutes": true
-		}
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "d5beb55e-16fc-420e-8c39-936c2758dcf0"
+			}
+		},
+		"owner": "qe170148"
 	}
 }
