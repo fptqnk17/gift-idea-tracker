@@ -16,7 +16,10 @@ import Modal from 'react-native-modal';
 
 import Loading from '@/components/Loading';
 import { addGift } from '@/features/gifts/giftSlice';
-import { fetchRecipients } from '@/features/recipients/recipientService';
+import {
+	fetchRecipients,
+	updateRecipient,
+} from '@/features/recipients/recipientService';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { uploadGiftThumbnail } from '@/services/uploadImage';
 import { formatPrice } from '@/utils/priceUtils';
@@ -134,8 +137,14 @@ const AddGiftScreen = () => {
 			};
 
 			await dispatch(addGift(giftData)).unwrap();
-			alert('Gift added successfully!');
 
+			const selectedRecipient = recipients.find((r) => r.id === recipient);
+			if (selectedRecipient) {
+				const updatedSpent = selectedRecipient.spent + parseFloat(price);
+				await updateRecipient(recipient!, { spent: updatedSpent });
+			}
+
+			alert('Gift added successfully!');
 			router.push('/(gifts)');
 		} catch (error) {
 			console.error('Error saving gift:', error);
