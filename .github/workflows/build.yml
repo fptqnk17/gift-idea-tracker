@@ -5,6 +5,9 @@ on:
     branches:
       - feature/deploy
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +20,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+
       - name: 🏗 Setup Bun
         uses: oven-sh/setup-bun@v2
 
@@ -28,7 +37,16 @@ jobs:
         with:
           packager: bun
           eas-version: latest
+          expo-version: 52
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Build app
-        run: eas build -p android -e production
+        run: eas build --platform android --profile production --local --output ${{ github.workspace }}/app-release.apk
+
+      - name: GH Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: gift-idea-tracker
+          tag_name: 1.0.0
+          files: |
+            ${{ github.workspace }}/app-release.apk
