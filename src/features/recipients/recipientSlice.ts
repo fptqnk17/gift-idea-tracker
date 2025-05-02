@@ -47,6 +47,20 @@ export const deleteRecipient = createAsyncThunk(
 	},
 );
 
+export const updateRecipient = createAsyncThunk(
+	'recipients/updateRecipient',
+	async (
+		{ id, updates }: { id: string; updates: Partial<CreateRecipientDTO> },
+		{ rejectWithValue },
+	) => {
+		try {
+			return await recipientService.updateRecipient(id, updates);
+		} catch (error) {
+			return rejectWithValue((error as Error).message);
+		}
+	},
+);
+
 const recipientSlice = createSlice({
 	name: 'recipients',
 	initialState,
@@ -81,7 +95,27 @@ const recipientSlice = createSlice({
 						(recipient) => recipient.id !== action.payload,
 					);
 				},
-			);
+			)
+			.addCase(updateRecipient.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+			})
+			.addCase(
+				updateRecipient.fulfilled,
+				(state, action: PayloadAction<Recipient>) => {
+					state.loading = false;
+					const index = state.recipients.findIndex(
+						(recipient) => recipient.id === action.payload.id,
+					);
+					if (index !== -1) {
+						state.recipients[index] = action.payload;
+					}
+				},
+			)
+			.addCase(updateRecipient.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.payload as string;
+			});
 	},
 });
 

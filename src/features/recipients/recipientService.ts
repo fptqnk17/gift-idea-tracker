@@ -23,6 +23,21 @@ export const deleteRecipient = async (id: string): Promise<void> => {
 	if (error) throw error;
 };
 
+export const updateRecipient = async (
+	id: string,
+	updates: Partial<CreateRecipientDTO>,
+): Promise<Recipient> => {
+	const { data, error } = await supabase
+		.from('recipients')
+		.update(updates)
+		.eq('id', id)
+		.single();
+
+	if (error) throw error;
+
+	return data as Recipient;
+};
+
 export const findRecipientById = async (id: number): Promise<string | null> => {
 	const { data, error } = await supabase
 		.from('recipients')
