@@ -78,10 +78,12 @@ const EditGiftScreen = () => {
 					if (recipientData) {
 						setRecipientName(recipientData.name);
 					} else {
-						const fetchedRecipientName = await findRecipientById(
-							Number(recipient),
-						);
-						setRecipientName(fetchedRecipientName);
+						const fetchedRecipient = await findRecipientById(Number(recipient));
+						if (fetchedRecipient) {
+							setRecipientName(fetchedRecipient.name);
+						} else {
+							console.error('Recipient not found');
+						}
 					}
 				} catch (error) {
 					console.error('Failed to fetch recipient name:', error);
