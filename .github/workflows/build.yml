@@ -24,9 +24,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🏗 Setup Bun
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          source /home/runner/.bashrc
+        uses: oven-sh/setup-bun@v2
 
       - name: 📦 Install dependencies
         run: bun install
