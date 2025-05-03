@@ -204,7 +204,7 @@ const HomeScreen = () => {
 
 			<ScrollView style={styles.scrollView}>
 				{filteredGifts.map((gift) => {
-					if (!gift || !gift.id) {
+					if (!gift || !gift.id || typeof gift !== 'object') {
 						console.error('Invalid gift data:', gift);
 						return null;
 					}
@@ -213,12 +213,12 @@ const HomeScreen = () => {
 						<GiftCard
 							key={gift.id}
 							id={gift.id}
-							image={gift.image}
-							title={gift.title}
-							description={gift.description}
-							price={gift.price}
-							recipient={gift.recipient}
-							selectedDate={gift.selectedDate}
+							image={gift.image || ''}
+							title={gift.title || ''}
+							description={gift.description || ''}
+							price={gift.price || 0}
+							recipient={gift.recipient || ''}
+							selectedDate={gift.selectedDate || ''}
 						/>
 					);
 				})}
