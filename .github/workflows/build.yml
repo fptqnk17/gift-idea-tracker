@@ -3,7 +3,7 @@ name: Build apk
 on:
   push:
     branches:
-      - feature/deploys
+      - main
 
 permissions:
   contents: write
