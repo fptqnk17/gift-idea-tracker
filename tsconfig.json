@@ -5,7 +5,11 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"typeRoots": ["./node_modules/@types", "./@types"]
+		"typeRoots": ["./node_modules/@types", "./@types"],
+		"esModuleInterop": true,
+		"module": "commonjs",
+		"target": "es6",
+		"jsx": "react"
 	},
 	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
