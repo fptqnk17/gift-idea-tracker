@@ -16,13 +16,13 @@ jest.mock('@/services/supabaseClient', () => {
 	const mockInsert = jest.fn(() => ({ single: mockSingle }));
 	const mockUpdate = jest.fn(() => ({ eq: mockEq }));
 	const mockDelete = jest.fn(() => ({ eq: mockEq }));
-	
+
 	// From function returns an object with all the chainable methods
 	const mockFrom = jest.fn(() => ({
 		select: mockSelect,
 		insert: mockInsert,
 		update: mockUpdate,
-		delete: mockDelete
+		delete: mockDelete,
 	}));
 
 	// Return the mock client
@@ -36,13 +36,82 @@ jest.mock('@/services/supabaseClient', () => {
 			update: mockUpdate,
 			delete: mockDelete,
 			eq: mockEq,
-			single: mockSingle
-		}
+			single: mockSingle,
+		},
 	};
 });
 
 // Get the mocks for easy access in tests
 const mocks = (supabase as any).__mocks;
+
+// Define mock data objects to resolve the errors
+
+const mockRecipients = [
+	{
+		id: '1',
+		name: 'John Doe',
+		image: 'https://example.com/john.jpg',
+		budget: 100,
+		spent: 50,
+	},
+	{
+		id: '2',
+		name: 'Jane Smith',
+		image: 'https://example.com/jane.jpg',
+		budget: 150,
+		spent: 75,
+	},
+];
+
+const mockResult = {
+	id: '3',
+	name: 'New Person',
+	image: 'https://example.com/new-person.jpg',
+	budget: 200,
+	spent: 0,
+	createdAt: '2025-05-02T12:00:00Z',
+};
+
+// Fixing the mock implementation to return the expected data for each test case
+
+// Update the mock implementation for `fetchRecipients`
+mocks.select.mockImplementation(() => ({
+	eq: mocks.eq,
+	single: jest.fn().mockResolvedValueOnce({
+		data: mockRecipients,
+		error: null,
+	}),
+}));
+
+// Update the mock implementation for `addRecipient`
+mocks.insert.mockImplementation(() => ({
+	single: jest.fn().mockResolvedValueOnce({
+		data: mockResult,
+		error: null,
+	}),
+}));
+
+// Update the mock implementation for `updateRecipient`
+mocks.update.mockImplementation(() => ({
+	eq: jest.fn().mockResolvedValueOnce({
+		data: mockResult,
+		error: null,
+	}),
+}));
+
+// Update the mock implementation for `findRecipientById`
+mocks.select.mockImplementation(() => ({
+	eq: jest.fn().mockResolvedValueOnce({
+		data: { name: 'John Doe' },
+		error: null,
+	}),
+}));
+
+// Update the mock implementation for error cases
+mocks.single.mockImplementation(() => ({
+	data: null,
+	error: new Error('Failed to fetch recipients'),
+}));
 
 describe('recipientService', () => {
 	beforeEach(() => {

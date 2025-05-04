@@ -16,6 +16,28 @@ jest.mock('@/services/supabaseClient', () => ({
 				error: null,
 			})),
 		})),
+		delete: jest.fn(() => ({
+			eq: jest.fn(() => ({
+				error: null,
+			})),
+		})),
+		update: jest.fn(() => ({
+			eq: jest.fn(() => ({
+				select: jest.fn(() => ({
+					single: jest.fn(() => ({
+						data: {
+							id: '1',
+							title: 'Updated Gift',
+							image: 'https://example.com/gift1.jpg',
+							price: 25,
+							recipient: '1',
+							selectedDate: '2025-05-01',
+						},
+						error: null,
+					})),
+				})),
+			})),
+		})),
 	})),
 }));
 
