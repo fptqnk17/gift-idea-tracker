@@ -5,13 +5,17 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 
 export default function SettingsScreen() {
+	const events = [
+		{ id: 1, name: 'Event 1', date: '2025-05-01', synced: true },
+		{ id: 2, name: 'Event 2', date: '2025-05-03', synced: false },
+	]
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Calendar & Reminder</Text>
       <ScrollView style={styles.scrollView}>
         <CalendarIntegration />
         <ReminderSettings />
-        <SyncedEvents />
+        <SyncedEvents events={events}  />
       </ScrollView>
     </SafeAreaView>
   );
