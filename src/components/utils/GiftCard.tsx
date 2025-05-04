@@ -25,7 +25,7 @@ export default function GiftCard({
 	useEffect(() => {
 		const fetchRecipientName = async () => {
 			const name = await findRecipientById(Number(recipient));
-			setRecipientName(name);
+			setRecipientName(name?.name!);
 		};
 
 		fetchRecipientName();
