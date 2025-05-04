@@ -1,4 +1,4 @@
-# 🎁 Gift Idea Tracker
+b# 🎁 Gift Idea Tracker
 
 A mobile application built with **React Native + Redux + Supabase**, designed to help users organize and track gift ideas for their friends, family, and special occasions — all in one place.
 
@@ -17,7 +17,7 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
 | 💻 Development           | [a0.dev](https://a0.dev) to generate boilerplate code from designs<br>[VSCode](https://code.visualstudio.com) with [GitHub Copilot](https://github.com/features/copilot) for live coding, bug fixes, and code suggestions |
 | 🧪 Testing               | Combination of **GitHub Copilot** and **ChatGPT** for writing test cases and debugging<br>Manual & automated testing via Jest + React Native Testing Library                                                              |
 
-<br>
+<br/>
 
 ## ✨ Features
 
@@ -30,8 +30,7 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
 - 🔔 Push notifications (optional)
 - ☁️ Data stored securely using Supabase
 
-
-<br>
+<br/>
 
 ## 🛠️ Tech Stack
 
@@ -43,3 +42,28 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
 | AI Assistant | ChatGPT, GitHub Copilot, a0.dev           |
 | Testing      | Jest, React Native Testing Library, Detox |
 | Build/Deploy | Expo, EAS Build, Google Play, TestFlight  |
+
+<br/>
+
+## 🧩 Installation & Running App
+
+- Clone the repository:
+  ```bash
+  git clone https://github.com/your-username/gift-idea-tracker.git
+  cd gift-idea-tracker
+  ```
+
+- Install dependencies using Bun:
+  ```bash
+  bun install
+  ```
+
+- Start Expo development server
+  ```bash
+  bun run start
+  ```
+
+- Run unit and integration tests
+  ```bash
+  bun x jest
+  ```
