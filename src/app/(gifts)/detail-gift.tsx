@@ -38,8 +38,16 @@ const DetailGiftScreen = () => {
 
 	useEffect(() => {
 		const fetchRecipientName = async () => {
-			const name = await findRecipientById(Number(recipient));
-			setRecipientName(name);
+			try {
+				const recipientData = await findRecipientById(Number(recipient));
+				if (recipientData) {
+					setRecipientName(recipientData.name);
+				} else {
+					console.error('Recipient not found');
+				}
+			} catch (error) {
+				console.error('Failed to fetch recipient name:', error);
+			}
 		};
 
 		fetchRecipientName();

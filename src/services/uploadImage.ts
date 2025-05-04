@@ -2,9 +2,10 @@ import * as FileSystem from 'expo-file-system';
 
 import supabase from '@/services/supabaseClient';
 
-export const uploadGiftThumbnail = async (
+export const uploadFileToBucket = async (
 	uri: string,
-	bucketName: string = 'gift-thumbnail',
+	bucketName: string,
+	contentType: string = 'image/jpeg',
 ): Promise<string> => {
 	try {
 		const fileName = uri.split('/').pop();
@@ -24,7 +25,7 @@ export const uploadGiftThumbnail = async (
 		const { data, error } = await supabase.storage
 			.from(bucketName)
 			.upload(fileName, arrayBuffer, {
-				contentType: 'image/jpeg',
+				contentType,
 				cacheControl: '3600',
 				upsert: true,
 			});
@@ -45,7 +46,21 @@ export const uploadGiftThumbnail = async (
 
 		return publicUrlData.publicUrl;
 	} catch (error) {
-		console.error('Error uploading image:', error);
-		throw new Error('Failed to upload image');
+		console.error('Error uploading file:', error);
+		throw new Error('Failed to upload file');
 	}
+};
+
+export const uploadGiftThumbnail = async (
+	uri: string,
+	bucketName: string = 'gift-thumbnail',
+): Promise<string> => {
+	return uploadFileToBucket(uri, bucketName);
+};
+
+export const uploadRecipientAvatar = async (
+	uri: string,
+	bucketName: string = 'recipient-avatar',
+): Promise<string> => {
+	return uploadFileToBucket(uri, bucketName);
 };
