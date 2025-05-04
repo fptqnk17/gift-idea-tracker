@@ -13,9 +13,10 @@ export const addGift = async (gift: CreateGiftDTO): Promise<GiftIdea> => {
 	return data as GiftIdea;
 };
 
-export const deleteGift = async (id: string): Promise<void> => {
+export const deleteGift = async (id: string): Promise<boolean> => {
 	const { error } = await supabase.from('gifts').delete().eq('id', id);
 	if (error) throw error;
+	return true;
 };
 
 export const updateGift = async (
