@@ -7,39 +7,51 @@ import {
 } from '@/features/recipients/recipientService';
 import supabase from '@/services/supabaseClient';
 
-// Mock the entire Supabase client
-jest.mock('@/services/supabaseClient', () => {
-	// Mock implementation functions
-	const mockSingle = jest.fn();
-	const mockEq = jest.fn(() => ({ single: mockSingle }));
-	const mockSelect = jest.fn(() => ({ eq: mockEq, single: mockSingle }));
-	const mockInsert = jest.fn(() => ({ single: mockSingle }));
-	const mockUpdate = jest.fn(() => ({ eq: mockEq }));
-	const mockDelete = jest.fn(() => ({ eq: mockEq }));
-
-	// From function returns an object with all the chainable methods
-	const mockFrom = jest.fn(() => ({
-		select: mockSelect,
-		insert: mockInsert,
-		update: mockUpdate,
-		delete: mockDelete,
-	}));
-
-	// Return the mock client
-	return {
-		from: mockFrom,
-		// Expose the internal mocks for test access
-		__mocks: {
-			from: mockFrom,
-			select: mockSelect,
-			insert: mockInsert,
-			update: mockUpdate,
-			delete: mockDelete,
-			eq: mockEq,
-			single: mockSingle,
-		},
-	};
-});
+// Update the mock implementation to include `delete`, `update`, `select`, and `single` methods
+jest.mock('@/services/supabaseClient', () => ({
+	from: jest.fn(() => ({
+		select: jest.fn(() => ({
+			eq: jest.fn(() => ({
+				single: jest.fn(() => ({
+					data: { name: 'John Doe' },
+					error: null,
+				})),
+			})),
+		})),
+		insert: jest.fn(() => ({
+			single: jest.fn(() => ({
+				data: {
+					id: '3',
+					name: 'New Person',
+					image: 'https://example.com/new-person.jpg',
+					budget: 200,
+					spent: 0,
+					createdAt: '2025-05-02T12:00:00Z',
+				},
+				error: null,
+			})),
+		})),
+		delete: jest.fn(() => ({
+			eq: jest.fn(() => ({
+				error: null,
+			})),
+		})),
+		update: jest.fn(() => ({
+			eq: jest.fn(() => ({
+				single: jest.fn(() => ({
+					data: {
+						id: '1',
+						name: 'Updated Name',
+						image: 'https://example.com/john.jpg',
+						budget: 300,
+						spent: 50,
+					},
+					error: null,
+				})),
+			})),
+		})),
+	})),
+}));
 
 // Get the mocks for easy access in tests
 const mocks = (supabase as any).__mocks;

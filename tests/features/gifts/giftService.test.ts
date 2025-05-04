@@ -19,6 +19,7 @@ jest.mock('@/services/supabaseClient', () => ({
 		delete: jest.fn(() => ({
 			eq: jest.fn(() => ({
 				error: null,
+				data: true, // Mocking the expected result for deleteGift
 			})),
 		})),
 		update: jest.fn(() => ({

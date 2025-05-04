@@ -5,7 +5,8 @@ import CalendarIntegration from '@/components/settings/CalendarIntegration';
 
 describe('CalendarIntegration Component', () => {
 	it('should render the calendar integration button', () => {
-		const { getByText } = render(<CalendarIntegration />);
+		const mockFn = jest.fn();
+		const { getByText } = render(<CalendarIntegration onIntegrate={mockFn} />);
 		expect(getByText('Integrate Calendar')).toBeTruthy();
 	});
 
