@@ -6,6 +6,8 @@ A mobile application built with **React Native + Redux + Supabase**, designed to
 
 ---
 
+<img src="https://raw.githubusercontent.com/fptqnk17/.github/refs/heads/main/images/banner-bao-thu.png" alt="Advertisement" />
+
 ## 💡 AI-Powered Development Workflow
 
 We leveraged **cutting-edge AI tools** throughout the entire software development lifecycle to accelerate productivity, improve quality, and stay creative:
