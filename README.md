@@ -73,7 +73,9 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
 
 <br/>
 
-## Setup Environment
+## ⚙️ Configuration
+
+Create a `.env` file there and add the following environment variables:
 
 | #   | Variable Name           | Description                        | Example                        |
 | --- | ----------------------- | ---------------------------------- | ------------------------------ |
