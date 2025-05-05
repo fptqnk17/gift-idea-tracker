@@ -1,4 +1,4 @@
-b# 🎁 Gift Idea Tracker
+# 🎁 Gift Idea Tracker
 
 A mobile application built with **React Native + Redux + Supabase**, designed to help users organize and track gift ideas for their friends, family, and special occasions — all in one place.
 
@@ -48,17 +48,20 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
 ## 🧩 Installation & Running App
 
 - Clone the repository:
+
   ```bash
   git clone https://github.com/your-username/gift-idea-tracker.git
   cd gift-idea-tracker
   ```
 
 - Install dependencies using Bun:
+
   ```bash
   bun install
   ```
 
 - Start Expo development server
+
   ```bash
   bun run start
   ```
@@ -67,3 +70,13 @@ We leveraged **cutting-edge AI tools** throughout the entire software developmen
   ```bash
   bun x jest
   ```
+
+<br/>
+
+## Setup Environment
+
+| #   | Variable Name           | Description                        | Example                        |
+| --- | ----------------------- | ---------------------------------- | ------------------------------ |
+| 1   | SUPABASE_URL            | The URL of your Supabase project   | https://xyzcompany.supabase.co |
+| 2   | SUPABASE_KEY            | The API key for accessing Supabase | your-supabase-api-key          |
+| 3   | EXPO_ROUTER_IMPORT_MODE | The import mode for Expo Router    | static                         |
